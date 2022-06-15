@@ -12,7 +12,12 @@
 
 1. 挑选基准值：随机挑出一个元素（一般选第一个元素就可以了），称为“基准”（pivot），
 2. 划分（partition）：重新排序数组，使所有比基准值小的元素摆放在基准前面，所有比基准值大的元素摆在基准后面（与基准值相等的数可以到任何一边）。
-3. 递归排序子数组：递归地将小于基准值元素的子数组和大于基准值元素的子数组排序；递归出口是子数组大小小于1。
+3.  递归排序子数组：递归地将小于基准值元素的子数组和大于基准值元素的子数组排序；递归出口是子数组大小小于1。
+
+
+详解：
+例如，[4,5,6,7,1,2,3],循环的目的是将大于基准的数字放在右面，小于基准的放在左面，最关键是基准和小于基准的最后一个数调换位置.基准设为left位置（0），arr[left]=4，设置一快一慢指针（i,j，初始值都为left+1）,快指针用来循环比较，切记录如果当前数字大于基准的位置，方便与慢指针调换数据；
+慢指针用来记录小于基准的数字的位置。循环开始，如果数值大于基准，i+=1，j不动，如果数值小于基准，那么i和j数值调换，j+=1，最后因为j提前+1了，所以调换基准的位置就是left和j-1，然后返回基准的最终位置j-1，再次循环就从0到（j—1）-1和（j-1）+1到len(arr)-1开始，直到right-left=1，既只有一个元素。
 
 选取基准值有数种具体方法，选取方法对排序的时间复杂度有决定性影响。
 
@@ -22,29 +27,34 @@
 
 ### 1.2 代码
 
-``` C++
-int partition(vector<int> &arr, int left, int right){
-    /*
-    标准的快排划分(非常重要)
-    每次选取第一个元素作为pivot
-    */
-    int pivot = arr[left];
-    while(left < right){
-        while(left < right && pivot <= arr[right]) right--;
-        arr[left] = arr[right]; 
-        while(left < right && pivot >= arr[left]) left++;
-        arr[right] = arr[left];
-    }
-    arr[left] = pivot;
-    return left; 
-}
+``` python
+def quicksort(arr,left,right):
+    if left<right:
+        tmp=par(arr,left,right)
+        quicksort(arr,left,tmp-1)
+        quicksort(arr, tmp+1, right)
 
-void quick_sort(vector<int> &arr, int left, int right){
-    if(left >= right) return;
-    int pivot_i = partition(arr, left, right);
-    quick_sort(arr, left, pivot_i - 1);
-    quick_sort(arr, pivot_i + 1, right);
-}
+    return arr
+
+
+
+def par(arr,left,right):
+    pivot=left    #设最左面位置元素为基准
+    index=pivot+1    #设置慢指针
+    i=index     #设置快指针
+    while i<=right:
+        if arr[i]<arr[pivot]:
+            swap(arr, index, i)
+            index+=1
+        i+=1
+        
+    swap(arr,pivot, index-1)   #把基准放在arr最终位置
+
+    return index-1
+
+
+def swap(arr, i, j):
+    arr[i], arr[j] = arr[j], arr[i]
 ```
 
 ## 2. 归并排序
