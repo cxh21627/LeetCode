@@ -63,48 +63,42 @@ def swap(arr, i, j):
 1. 拆分：将原序列划分成子序列，然后假设子序列已经有序；
 2. 合并：将有序的子序列合并，得到完全有序的序列；
 
+详解：根据递归思想，当数列只有一个元素时，它是有序的，那么先将序列拆分到单个元素；然后再两两组合比较，放一个空列表，依次比较两个有序子数列，从小到大放入列表，并pop(0)，当一个子序列为空时,另一个有序子序列的剩下元素都放在列表里，循环到最后两个子序列比较，得出结果。
+
+
+
+
 归并排序具体有两种思路：一种是自上而下递归地归并，另一种是自下而上迭代地归并。
 
 时间复杂度：最坏、平均时间复杂度均为O(nlogn)。
 
 ### 2.2 代码
-这里给出归并排序的典型应用：链表排序的代码，采用的是自上而下归并。
-``` C++
-ListNode* mergeSort(ListNode *head){
-    if(!head || !head -> next) return head;
 
-    ListNode *pre_slow = NULL, *slow = head, *fast = head;
-    while(fast && fast -> next){
-        pre_slow = slow;
-        slow = slow -> next;
-        fast = fast -> next -> next;
-    }
-    pre_slow -> next = NULL; // 1.1 divide into sublists
-    ListNode *l1 = mergeSort(head); 1.2 mergeSort sublists
-    ListNode *l2 = mergeSort(slow);
+``` python
+def mergesof(arr):
+    import math
+    if len(arr)<2:
+        return arr
+    middle=math.floor(len(arr)/2)
+    left,right=arr[0:middle],arr[middle:]
+    return merge(mergesof(left),mergesof(right))
 
-    return merge2SortedLists(l1, l2); // 2. merge
-}
+def merge(left,right):
+    result=[]
 
-ListNode* merge2SortedLists(ListNode *l1, ListNode *l2){
-    ListNode *head = new ListNode(0), *p = head;
+    while left and right:
+        if left[0]>=right[0]:
+            result.append(right[0])
+            right.pop(0)
+        else:
+            result.append(left[0])
+            left.pop(0)
+    while left:
+        result.append(left.pop(0))
 
-    while(l1 && l2){
-        if(l1 -> val <= l2 -> val){
-            p -> next = l1;
-            p = p -> next;
-            l1 = l1 -> next;
-        }
-        else{
-            p -> next = l2;
-            p = p -> next;
-            l2 = l2 -> next;
-        }
-    }
+    while right:
+        result.append(right.pop(0))
+    print("resule:",left,right,result)
 
-    if(l1) p -> next = l1;
-    if(l2) p -> next = l2;
-    p = head -> next; delete head;
-    return p;
-}
+    return result
 ```
